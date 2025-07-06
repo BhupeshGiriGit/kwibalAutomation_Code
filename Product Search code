@@ -1,0 +1,50 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.time.Duration;
+import java.util.List;
+
+public class KwibalSearchTest {
+
+    public static void main(String[] args) {
+
+        // Optional: Set system property if chromedriver is not in PATH
+        // System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+
+        WebDriver driver = new ChromeDriver();
+        
+        try {
+            // Setup browser
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.manage().window().maximize();
+
+            // 1. Open the website
+            driver.get("https://web.platform.kwibal.com/");
+
+            // 2. Find the search bar and enter product keyword
+            WebElement searchInput = driver.findElement(By.cssSelector("input[placeholder='Search for products']"));
+            searchInput.sendKeys("tshirt");
+
+            // 3. Submit search
+            searchInput.submit(); // Or use click on search button if needed
+
+            // 4. Wait and validate search results
+            List<WebElement> productResults = driver.findElements(By.cssSelector(".product-card, .product-item"));
+
+            // 5. Print result
+            if (productResults.size() > 0) {
+                System.out.println("Search results are displayed. Total results: " + productResults.size());
+            } else {
+                System.out.println(" No search results displayed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 6. Close browser
+            driver.quit();
+        }
+    }
+}
