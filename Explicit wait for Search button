@@ -1,0 +1,56 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.List;
+
+public class KwibalSearchWithWait {
+
+    public static void main(String[] args) {
+
+        // Optional: System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+
+        WebDriver driver = new ChromeDriver();
+
+        try {
+            // Setup
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.manage().window().maximize();
+
+            // 1. Open the website
+            driver.get("https://web.platform.kwibal.com/");
+
+            // 2. Enter the search keyword
+            WebElement searchInput = driver.findElement(By.cssSelector("input[placeholder='Search for products']"));
+            searchInput.sendKeys("tshirt");
+
+            // 3. Explicit wait for the search button to become clickable
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit'], button.search-button")));
+
+            // 4. Click the search button
+            searchButton.click();
+
+            // 5. Validate results
+            List<WebElement> productResults = driver.findElements(By.cssSelector(".product-card, .product-item"));
+
+            if (productResults.size() > 0) {
+                System.out.println("Search results are displayed. Total results: " + productResults.size());
+            } else {
+                System.out.println(" No search results displayed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 6. Close browser
+            driver.quit();
+        }
+    }
+}
